@@ -9,7 +9,7 @@ import { useGetUserQuery } from "../../features/users/usersApi";
 import isValidEmail from "../../utils/isValidEmail";
 import Error from "../ui/Error";
 
-export default function Modal({ open, control }) {
+export default function Modal({ open, control, refetch }) {
     const [to, setTo] = useState("");
     const [message, setMessage] = useState("");
     const [userCheck, setUserCheck] = useState(false);
@@ -75,7 +75,7 @@ export default function Modal({ open, control }) {
 
     const handleSearch = debounceHandler(doSearch, 500);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (conversation?.length > 0) {
@@ -92,7 +92,7 @@ export default function Modal({ open, control }) {
             });
         } else if (conversation?.length === 0) {
             // add conversation
-            addConversation({
+            await addConversation({
                 sender: myEmail,
                 data: {
                     participants: `${myEmail}-${participant[0].email}`,
@@ -101,6 +101,7 @@ export default function Modal({ open, control }) {
                     timestamp: new Date().getTime(),
                 },
             });
+            refetch();
         }
     };
 

@@ -82,14 +82,31 @@ export const conversationsApi = apiSlice.injectEndpoints({
         getConversation: builder.query({
             query: ({ userEmail, participantEmail }) =>
                 `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=${participantEmail}-${userEmail}`,
+            providesTags: ["conversations"],
         }),
+
         addConversation: builder.mutation({
             query: ({ sender, data }) => ({
                 url: "/conversations",
                 method: "POST",
                 body: data,
             }),
+            invalidatesTags: ["conversations"],
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                // // optimistic cache update start
+                // dispatch(
+                //     apiSlice.util.updateQueryData(
+                //         "getConversations",
+                //         arg.sender,
+                //         (draft) => {
+                //             const draftConversation = draft.find(
+                //                 (c) => c.id == conversation?.data?.id
+                //             );
+                //             draftConversation.message = arg.data.message;
+                //             draftConversation.timestamp = arg.data.timestamp;
+                //         }
+                //     )
+                // );
                 const conversation = await queryFulfilled;
                 if (conversation?.data?.id) {
                     // silent entry to message table

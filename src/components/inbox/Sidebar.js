@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useGetConversationsQuery } from "../../features/conversations/conversationsApi";
 import ChatItems from "./ChatIItems";
 import Modal from "./Modal";
 // import Blank from "./Blank";
 
 export default function Sidebar() {
     const [opened, setOpened] = useState(false);
+    const { user } = useSelector((state) => state.auth) || {};
+    const { email } = user || {};
+    const { data, isLoading, isError, error, refetch } =
+        useGetConversationsQuery(email) || {};
 
     const controlModal = () => {
         setOpened((prevState) => !prevState);
@@ -34,10 +40,10 @@ C139.689,120.449,136.331,117.092,132.189,117.092z"
                 </svg>
             </div>
             <div className="overflow-auto h-[calc(100vh_-_129px)]">
-                <ChatItems />
+                <ChatItems {...{ data, isLoading, isError, error }} />
             </div>
             {/* <Blank /> */}
-            <Modal open={opened} control={controlModal} />
+            <Modal open={opened} control={controlModal} refetch={refetch} />
         </div>
     );
 }

@@ -4,19 +4,15 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-    conversationsApi,
-    useGetConversationsQuery,
-} from "../../features/conversations/conversationsApi";
+import { conversationsApi } from "../../features/conversations/conversationsApi";
 import getPartnerInfo from "../../utils/getPartnerInfo";
 import Error from "../ui/Error";
 import ChatItem from "./ChatItem";
 
-export default function ChatItems() {
+export default function ChatItems({ data, isLoading, isError, error }) {
     const { user } = useSelector((state) => state.auth) || {};
     const { email } = user || {};
-    const { data, isLoading, isError, error } =
-        useGetConversationsQuery(email) || {};
+
     const { data: conversations, totalCount } = data || {};
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
