@@ -75,9 +75,13 @@ export default function Modal({ open, control, refetch }) {
 
     const handleSearch = debounceHandler(doSearch, 500);
 
+    if (conversation !== undefined) {
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setUserCheck(true);
+        console.log(conversation);
         if (conversation?.length > 0) {
             // edit conversation
             editConversation({
@@ -101,8 +105,9 @@ export default function Modal({ open, control, refetch }) {
                     timestamp: new Date().getTime(),
                 },
             });
-            refetch();
         }
+
+        setMessage("");
     };
 
     return (

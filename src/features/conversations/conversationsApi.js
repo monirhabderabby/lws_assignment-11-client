@@ -2,6 +2,9 @@ import io from "socket.io-client";
 import { apiSlice } from "../api/apiSlice";
 import { messagesApi } from "../messages/messagesApi";
 
+let isDuplicate = false;
+let leatestConversationId = 0;
+
 export const conversationsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getConversations: builder.query({
@@ -82,7 +85,8 @@ export const conversationsApi = apiSlice.injectEndpoints({
         getConversation: builder.query({
             query: ({ userEmail, participantEmail }) =>
                 `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=${participantEmail}-${userEmail}`,
-            providesTags: ["conversations"],
+            keepUnusedDataFor: 2,
+            providesTags: ["Conversation"],
         }),
 
         addConversation: builder.mutation({
@@ -91,22 +95,49 @@ export const conversationsApi = apiSlice.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["conversations"],
+            invalidatesTags: ["Conversation"],
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-                // // optimistic cache update start
-                // dispatch(
-                //     apiSlice.util.updateQueryData(
-                //         "getConversations",
-                //         arg.sender,
-                //         (draft) => {
-                //             const draftConversation = draft.find(
-                //                 (c) => c.id == conversation?.data?.id
-                //             );
-                //             draftConversation.message = arg.data.message;
-                //             draftConversation.timestamp = arg.data.timestamp;
-                //         }
-                //     )
-                // );
+                // optimistic cache update start
+                const pathResult = dispatch(
+                    apiSlice.util.updateQueryData(
+                        "getConversations",
+                        arg.sender,
+                        (draft) => {
+                            const draftConversation = draft.data.find(
+                                (c) => c.participants == arg.data.participants
+                            );
+                            if (draftConversation) {
+                                isDuplicate = true;
+                                draftConversation.message = arg.data.message;
+                                draftConversation.timestamp =
+                                    arg.data.timestamp;
+                            } else {
+                                leatestConversationId =
+                                    parseInt(draft.data.length) + 1;
+                                draft.data.push({
+                                    ...arg?.data,
+                                    id: leatestConversationId,
+                                });
+                            }
+                        }
+                    )
+                );
+
+                // get conversation catch update
+                const converationPathResult = dispatch(
+                    apiSlice.util.updateQueryData(
+                        "getConversation",
+                        arg.sender,
+                        (draft) => {
+                            draft.data.push({
+                                ...arg.data,
+                                id: leatestConversationId,
+                            });
+                        }
+                    )
+                );
+                // optimistic cache update end
+
                 const conversation = await queryFulfilled;
                 if (conversation?.data?.id) {
                     // silent entry to message table
