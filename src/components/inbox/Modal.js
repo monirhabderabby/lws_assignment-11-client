@@ -10,6 +10,7 @@ import isValidEmail from "../../utils/isValidEmail";
 import Error from "../ui/Error";
 
 export default function Modal({ open, control, refetch }) {
+    const [emailTerm, setEmailTerm] = useState("");
     const [to, setTo] = useState("");
     const [message, setMessage] = useState("");
     const [userCheck, setUserCheck] = useState(false);
@@ -68,20 +69,19 @@ export default function Modal({ open, control, refetch }) {
     const doSearch = (value) => {
         if (isValidEmail(value)) {
             // check user API
-            setUserCheck(true);
             setTo(value);
+            setUserCheck(true);
         }
     };
 
     const handleSearch = debounceHandler(doSearch, 500);
 
-    if (conversation !== undefined) {
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setUserCheck(true);
-        console.log(conversation);
+        if (emailTerm !== "") {
+            setUserCheck(true);
+        }
+
         if (conversation?.length > 0) {
             // edit conversation
             editConversation({
@@ -134,9 +134,10 @@ export default function Modal({ open, control, refetch }) {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-violet-500 focus:border-violet-500 focus:z-10 sm:text-sm"
                                     placeholder="Send to"
-                                    onChange={(e) =>
-                                        handleSearch(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        handleSearch(e.target.value);
+                                        setEmailTerm(e.target.value);
+                                    }}
                                 />
                             </div>
                             <div>

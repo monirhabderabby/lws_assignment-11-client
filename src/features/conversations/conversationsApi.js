@@ -35,6 +35,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
                 try {
                     await cacheDataLoaded;
                     socket.on("conversation", (data) => {
+                        console.log(data);
                         updateCachedData((draft) => {
                             const conversation = draft.data.find(
                                 (c) => c.id == data?.data?.id
@@ -44,7 +45,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
                                 conversation.message = data?.data?.message;
                                 conversation.timestamp = data?.data?.timestamp;
                             } else {
-                                // do nothing
+                                draft?.data?.push(data?.data);
                             }
                         });
                     });
