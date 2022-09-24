@@ -22,20 +22,22 @@ export const conversationsApi = apiSlice.injectEndpoints({
                 { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
             ) {
                 // create socket
-                const socket = io("http://localhost:9000", {
-                    reconnectionDelay: 1000,
-                    reconnection: true,
-                    reconnectionAttemps: 10,
-                    transports: ["websocket"],
-                    agent: false,
-                    upgrade: false,
-                    rejectUnauthorized: false,
-                });
+                const socket = io(
+                    "https://lws-chat-app-server-monir.herokuapp.com",
+                    {
+                        reconnectionDelay: 1000,
+                        reconnection: true,
+                        reconnectionAttemps: 10,
+                        transports: ["websocket"],
+                        agent: false,
+                        upgrade: false,
+                        rejectUnauthorized: false,
+                    }
+                );
 
                 try {
                     await cacheDataLoaded;
                     socket.on("conversation", (data) => {
-                        console.log(data);
                         updateCachedData((draft) => {
                             const conversation = draft.data.find(
                                 (c) => c.id == data?.data?.id

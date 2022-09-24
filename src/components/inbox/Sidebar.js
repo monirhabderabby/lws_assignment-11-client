@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useGetConversationsQuery } from "../../features/conversations/conversationsApi";
 import ChatItems from "./ChatIItems";
@@ -11,6 +11,12 @@ export default function Sidebar() {
     const { email } = user || {};
     const { data, isLoading, isError, error, refetch } =
         useGetConversationsQuery(email) || {};
+
+    useEffect(() => {
+        if (data) {
+            console.log(data);
+        }
+    }, [data]);
 
     const controlModal = () => {
         setOpened((prevState) => !prevState);
