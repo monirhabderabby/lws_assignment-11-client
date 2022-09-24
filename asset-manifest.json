@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/lws_assignment-11-client/static/css/main.4b301b4c.css",
+    "main.js": "/lws_assignment-11-client/static/js/main.c98e1a8f.js",
+    "static/js/787.7ea0274a.chunk.js": "/lws_assignment-11-client/static/js/787.7ea0274a.chunk.js",
+    "static/media/lws-logo-dark.svg": "/lws_assignment-11-client/static/media/lws-logo-dark.70a060d2626bd1c9398edde22f1bd0d8.svg",
+    "static/media/lws-logo-light.svg": "/lws_assignment-11-client/static/media/lws-logo-light.05c1a2a307370057e8995bda49d4495d.svg",
+    "static/media/blank.svg": "/lws_assignment-11-client/static/media/blank.7069ea26fb6aa3f58f5f52782ae37f02.svg",
+    "index.html": "/lws_assignment-11-client/index.html",
+    "main.4b301b4c.css.map": "/lws_assignment-11-client/static/css/main.4b301b4c.css.map",
+    "main.c98e1a8f.js.map": "/lws_assignment-11-client/static/js/main.c98e1a8f.js.map",
+    "787.7ea0274a.chunk.js.map": "/lws_assignment-11-client/static/js/787.7ea0274a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4b301b4c.css",
+    "static/js/main.c98e1a8f.js"
+  ]
+}
